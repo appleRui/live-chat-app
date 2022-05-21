@@ -81,6 +81,10 @@ GEM
     ffi (1.15.5)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    hirb (0.7.3)
+    hirb-unicode (0.0.5)
+      hirb (~> 0.5)
+      unicode-display_width (~> 0.1.1)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     listen (3.7.1)
@@ -153,6 +157,7 @@ GEM
     thor (1.2.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    unicode-display_width (0.1.1)
     warden (1.2.9)
       rack (>= 2.0.9)
     websocket-driver (0.7.5)
@@ -168,6 +173,8 @@ DEPENDENCIES
   byebug
   devise (~> 4.8)
   devise_token_auth (~> 1.1, >= 1.1.5)
+  hirb
+  hirb-unicode
   listen (~> 3.3)
   pg (~> 1.1)
   puma (~> 5.0)
