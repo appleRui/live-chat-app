@@ -21,7 +21,7 @@ nav p.email {
   <v-container>
     <Navbar />
     <ChatWindow :messages="messages" />
-    <NewChatForm />
+    <NewChatForm @connectCable="connectCable" />
   </v-container>
 </template>
 
@@ -30,6 +30,7 @@ import axios from 'axios'
 import ChatWindow from '../components/ChatWindow'
 import Navbar from '../components/Navbar'
 import NewChatForm from '../components/NewChatForm'
+import ActionCable from 'actioncable'
 
 export default {
     components: { Navbar, ChatWindow, NewChatForm },
@@ -37,6 +38,20 @@ export default {
     return {
       messages: [],
     }
+  },
+  mounted () {
+    const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
+    this.messageChannel = cable.subscriptions.create('RoomChannel', {
+      connected: () => {
+        this.getMessages()
+      },
+      received: () => {
+        this.getMessages()
+      }
+    })
+  },
+  beforeUnmount () { 
+    this.messageChannel.unsubscribe()
   },
   methods: {
     async getMessages () {
@@ -56,9 +71,13 @@ export default {
         console.log(err)
       }
     },
-  },
-  mounted() {
-    this.getMessages()
+      connectCable (message) {
+      this.messageChannel.perform('receive', {
+        message: message,
+        email: window.localStorage.getItem('uid')
+      })
+    }
+    // =======
   },
 }
 </script>
