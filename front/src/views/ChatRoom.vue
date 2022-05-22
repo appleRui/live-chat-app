@@ -20,13 +20,45 @@ nav p.email {
 <template>
   <v-container>
     <Navbar />
+    <ChatWindow :messages="messages" />
+    <NewChatForm />
   </v-container>
 </template>
 
 <script>
+import axios from 'axios'
+import ChatWindow from '../components/ChatWindow'
 import Navbar from '../components/Navbar'
+import NewChatForm from '../components/NewChatForm'
 
 export default {
-  components: { Navbar },
+    components: { Navbar, ChatWindow, NewChatForm },
+  data () {
+    return {
+      messages: [],
+    }
+  },
+  methods: {
+    async getMessages () {
+      try {
+        const res = await axios.get('http://localhost:3001/messages', {
+          headers: {
+            uid: window.localStorage.getItem('uid'),
+            "access-token": window.localStorage.getItem('access-token'),
+            client:window.localStorage.getItem('client')
+          }
+        })
+        if (!res) {
+          new Error('メッセージ一覧を取得できませんでした')
+        }
+        this.messages = res.data
+      } catch (err) {
+        console.log(err)
+      }
+    },
+  },
+  mounted() {
+    this.getMessages()
+  },
 }
 </script>
