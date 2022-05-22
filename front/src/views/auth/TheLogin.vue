@@ -49,6 +49,7 @@
 
 <script>
 import axios from 'axios'
+import setItem from '@/auth/setItem'
 
 export default {
     name: "TheLogin",
@@ -64,6 +65,7 @@ export default {
       login(){
         axios.post('http://localhost:3001/auth/sign_in', this.user)
         .then((res) => {
+          setItem(res.headers, res.data.data.name)
           this.$router.push('/chatroom')
         })
         .catch((e) => {
