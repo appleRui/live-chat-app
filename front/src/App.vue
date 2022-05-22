@@ -1,3 +1,9 @@
+<style>
+.v-main__wrap {
+  background-color: #ebf6f7;
+}
+</style>
+
 <template>
   <v-app>
     <v-main>
