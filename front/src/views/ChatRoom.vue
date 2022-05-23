@@ -20,20 +20,26 @@ nav p.email {
 <template>
   <v-container>
     <Navbar />
-    <ChatWindow :messages="messages" />
+    <ChatWindow
+      @connectCable="connectCable"
+      :messages="formattedMessages"
+      ref="chatWindow"
+    />
     <NewChatForm @connectCable="connectCable" />
   </v-container>
 </template>
 
 <script>
+import ActionCable from 'actioncable'
 import axios from 'axios'
 import ChatWindow from '../components/ChatWindow'
 import Navbar from '../components/Navbar'
 import NewChatForm from '../components/NewChatForm'
-import ActionCable from 'actioncable'
+import { formatDistanceToNow } from 'date-fns'
+import { ja } from 'date-fns/locale'
 
 export default {
-    components: { Navbar, ChatWindow, NewChatForm },
+  components: { Navbar, ChatWindow, NewChatForm },
   data () {
     return {
       messages: [],
@@ -44,9 +50,15 @@ export default {
     this.messageChannel = cable.subscriptions.create('RoomChannel', {
       connected: () => {
         this.getMessages()
+        .then(() => {
+          this.$refs.chatWindow.scrollToBottom()
+        })
       },
       received: () => {
         this.getMessages()
+        .then(() => {
+          this.$refs.chatWindow.scrollToBottom()
+        })
       }
     })
   },
@@ -77,7 +89,15 @@ export default {
         email: window.localStorage.getItem('uid')
       })
     }
-    // =======
   },
+  computed: {
+    formattedMessages () {
+      if (!this.messages.length) { return [] }
+      return this.messages.map(message => {
+        let time = formatDistanceToNow(new Date(message.created_at), { locale: ja })
+        return { ...message, created_at: time }
+      })
+    }
+  },  
 }
 </script>
