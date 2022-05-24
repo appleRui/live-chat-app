@@ -2,7 +2,7 @@
 
 ## Setup
 
-## tree
+### tree
 ```
 .
 ├── README.md
@@ -60,7 +60,7 @@ WORKDIR ${HOME}
 EXPOSE 8080
 ```
 
-### env file
+### .env
 ```sh
 WORKDIR=app-name
 POSTGRES_PASSWORD=db-password
@@ -69,10 +69,10 @@ API_PORT=3001
 FRONT_PORT=8081
 ```
 
-### docker
+### Bilding command
 ```sh
-dc build
-dc run api rails new . --force --database=postgresql --skip-bundle --webpacker --api
+docker-compose build
+docker-compose run api rails new . --force --database=postgresql --skip-bundle --webpacker --api
 docker-compose build api
 docker-compose run front vue create .
 docker-compose up -d
@@ -86,4 +86,16 @@ default: &default
   host: db            # 追加
   username: postgres  # 追加
   password: <%= ENV["POSTGRES_PASSWORD"] %>  # 追加
+```
+
+###  Setup command
+```sh
+docker-compose api rails db:create
+docker-compose down
+```
+
+### Access URI
+```
+Back: localhost:3001
+Front: localhost:8081
 ```
