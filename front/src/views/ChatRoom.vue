@@ -1,70 +1,82 @@
 <style scoped>
-nav {
-  padding: 20px;
-  border-bottom: 1px solid #eee;
+.container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  height: calc(100vh - 25px);
 }
-nav p {
-  margin: 2px auto;
-  font-size: 16px;
-  color: #444;
-}
-nav p.email {
-  font-size: 14px;
-  color: #999;
+.chat-container {
+  width: 80%;
 }
 </style>
   
 <template>
-  <v-container>
-    <Navbar />
-    <ChatWindow
-      @connectCable="connectCable"
-      :messages="formattedMessages"
-      ref="chatWindow"
-    />
-    <NewChatForm @connectCable="connectCable" />
-  </v-container>
+  <v-main>
+    <Systembar />
+    <div class="container">
+      <ChatSidebar :chatrooms="chatrooms" />
+      <div class="chat-container">
+        <ChatWindow
+          @connectCable="connectCable"
+          :messages="formattedMessages"
+          ref="chatWindow"
+        />
+        <NewChatForm @connectCable="connectCable" />
+      </div>
+    </div>
+  </v-main>
 </template>
 
 <script>
 import ActionCable from 'actioncable'
 import axios from 'axios'
 import ChatWindow from '../components/ChatWindow'
-import Navbar from '../components/Navbar'
+import ChatSidebar from '@/components/ChatSidebar.vue'
+import Systembar from '@/components/Systembar.vue'
 import NewChatForm from '../components/NewChatForm'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 
 export default {
-  components: { Navbar, ChatWindow, NewChatForm },
+  components: { Systembar, ChatSidebar, ChatWindow, NewChatForm },
   data () {
     return {
+      chatrooms: [],
       messages: [],
     }
   },
-  mounted () {
-    const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
-    this.messageChannel = cable.subscriptions.create('RoomChannel', {
-      connected: () => {
-        this.getMessages()
-        .then(() => {
-          this.$refs.chatWindow.scrollToBottom()
+  async created() {
+    try {
+        const res = await axios.get('http://localhost:3001/rooms', {
+          headers: {
+            uid: window.localStorage.getItem('uid'),
+            "access-token": window.localStorage.getItem('access-token'),
+            client:window.localStorage.getItem('client')
+          }
         })
-      },
-      received: () => {
-        this.getMessages()
-        .then(() => {
-          this.$refs.chatWindow.scrollToBottom()
-        })
+        this.chatrooms = res.data
+      } catch (err) {
+        console.log(err)
       }
-    })
   },
-  beforeUnmount () { 
-    this.messageChannel.unsubscribe()
-  },
+  // mounted () {
+  //   const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
+  //   this.messageChannel = cable.subscriptions.create('RoomChannel', {
+  //     connected: () => {
+  //       this.getMessages()
+  //       .then(() => {
+  //         this.$refs.chatWindow.scrollToBottom()
+  //       })
+  //     },
+  //     received: () => {
+  //       this.getMessages()
+  //       .then(() => {
+  //         this.$refs.chatWindow.scrollToBottom()
+  //       })
+  //     }
+  //   })
+  // },
+  // beforeUnmount () { 
+  //   this.messageChannel.unsubscribe()
+  // },
   methods: {
     async getMessages () {
       try {

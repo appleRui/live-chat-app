@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
 
   has_many :messages
   has_many :likes
+  has_many :rooms, through: :room_users
+  has_many :room_users
   
   validates :name, presence: true
   validates :name, length: { maximum: 30 }

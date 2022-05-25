@@ -1,7 +1,4 @@
-<style>
-.v-main__wrap {
-  background-color: #ebf6f7;
-}
+<style scoped>
 </style>
 
 <template>
@@ -16,9 +13,7 @@
 
 export default {
   name: 'App',
-
   data: () => ({
-    //
   }),
 };
 </script>

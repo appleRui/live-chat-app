@@ -1,5 +1,6 @@
 <style scoped>
 .chat-window {
+  height: 85%;
   background: white;
   padding: 30px 20px;
   border-bottom: 1px solid #eee;
@@ -50,7 +51,7 @@ ul li {
   margin-left: 4px;
 }
 .messages {
-  max-height: 400px;
+  height: 100%;
   overflow: auto;
 }
 </style>
