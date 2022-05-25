@@ -1,5 +1,6 @@
 <style scoped>
 form {
+  height: 15%;
   background-color: #fff;
   padding: 10px;
 }
