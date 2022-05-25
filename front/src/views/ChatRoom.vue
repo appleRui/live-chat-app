@@ -12,7 +12,7 @@
   <v-main>
     <Systembar />
     <div class="container">
-      <ChatSidebar />
+      <ChatSidebar :chatrooms="chatrooms" />
       <div class="chat-container">
         <ChatWindow
           @connectCable="connectCable"
@@ -39,29 +39,44 @@ export default {
   components: { Systembar, ChatSidebar, ChatWindow, NewChatForm },
   data () {
     return {
+      chatrooms: [],
       messages: [],
     }
   },
-  mounted () {
-    const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
-    this.messageChannel = cable.subscriptions.create('RoomChannel', {
-      connected: () => {
-        this.getMessages()
-        .then(() => {
-          this.$refs.chatWindow.scrollToBottom()
+  async created() {
+    try {
+        const res = await axios.get('http://localhost:3001/rooms', {
+          headers: {
+            uid: window.localStorage.getItem('uid'),
+            "access-token": window.localStorage.getItem('access-token'),
+            client:window.localStorage.getItem('client')
+          }
         })
-      },
-      received: () => {
-        this.getMessages()
-        .then(() => {
-          this.$refs.chatWindow.scrollToBottom()
-        })
+        this.chatrooms = res.data
+      } catch (err) {
+        console.log(err)
       }
-    })
   },
-  beforeUnmount () { 
-    this.messageChannel.unsubscribe()
-  },
+  // mounted () {
+  //   const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
+  //   this.messageChannel = cable.subscriptions.create('RoomChannel', {
+  //     connected: () => {
+  //       this.getMessages()
+  //       .then(() => {
+  //         this.$refs.chatWindow.scrollToBottom()
+  //       })
+  //     },
+  //     received: () => {
+  //       this.getMessages()
+  //       .then(() => {
+  //         this.$refs.chatWindow.scrollToBottom()
+  //       })
+  //     }
+  //   })
+  // },
+  // beforeUnmount () { 
+  //   this.messageChannel.unsubscribe()
+  // },
   methods: {
     async getMessages () {
       try {

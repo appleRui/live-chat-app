@@ -10,13 +10,18 @@
   background-color: #fff;
   cursor: pointer;
 }
+.chat-room__detail:hover {
+  background-color: #f2f2f2;
+  transition: 0.5s;
+}
 .chat-room__detail > .name {
   margin-bottom: 0.5rem;
 }
 </style>
+
 <template>
   <div class="chat-sidebar">
-    <div v-for="room in rooms" :key="room.id" class="chat-room">
+    <div v-for="room in chatrooms" :key="room.id" class="chat-room">
       <div @click="openChatroom" class="chat-room__detail">
         <div class="name">{{ room.name }}</div>
       </div>
@@ -28,22 +33,9 @@
 export default {
   data(){
     return{
-      rooms: [
-        {
-          id: 1,
-          name: 'ramdom',
-        },
-        {
-          id: 2,
-          name: 'general',
-        },
-        {
-          id: 3,
-          name: 'memory',
-        },
-      ]
     }
   },
+  props: ['chatrooms'],
   methods: {
     openChatroom(){
       return null
