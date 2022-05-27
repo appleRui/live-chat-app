@@ -12,7 +12,7 @@
   <v-main>
     <Systembar />
     <div class="container">
-      <ChatSidebar :chatrooms="chatrooms" />
+      <ChatSidebar @openChatroom="openChatroom" :chatrooms="chatrooms" />
       <div class="chat-container">
         <ChatWindow
           @connectCable="connectCable"
@@ -57,49 +57,65 @@ export default {
         console.log(err)
       }
   },
-  // mounted () {
-  //   const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
-  //   this.messageChannel = cable.subscriptions.create('RoomChannel', {
-  //     connected: () => {
-  //       this.getMessages()
-  //       .then(() => {
-  //         this.$refs.chatWindow.scrollToBottom()
-  //       })
-  //     },
-  //     received: () => {
-  //       this.getMessages()
-  //       .then(() => {
-  //         this.$refs.chatWindow.scrollToBottom()
-  //       })
-  //     }
-  //   })
-  // },
-  // beforeUnmount () { 
-  //   this.messageChannel.unsubscribe()
-  // },
+  mounted () {
+    const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
+    this.messageChannel = cable.subscriptions.create('RoomChannel', {
+      connected: () => {
+        const lastOpenRoom = this.$cookie.get('lastOpenChat')
+        if(lastOpenRoom != null){
+          this.getMessages(lastOpenRoom)
+          .then(() => {
+            this.$refs.chatWindow.scrollToBottom()
+          })
+        }
+      },
+      received: () => {
+        const lastOpenRoom = this.$cookie.get('lastOpenChat')
+        this.getMessages(lastOpenRoom).then(() => {
+          this.$refs.chatWindow.scrollToBottom()
+        })
+      }
+    })
+  },
+  beforeUnmount () { 
+    this.messageChannel.unsubscribe()
+  },
   methods: {
-    async getMessages () {
+    async getMessages(room_id) {
       try {
         const res = await axios.get('http://localhost:3001/messages', {
           headers: {
             uid: window.localStorage.getItem('uid'),
             "access-token": window.localStorage.getItem('access-token'),
             client:window.localStorage.getItem('client')
+          },
+          params: {
+            id: room_id
           }
         })
         if (!res) {
           new Error('メッセージ一覧を取得できませんでした')
         }
         this.messages = res.data
+        this.savedLastOpenRoom(room_id)
       } catch (err) {
-        console.log(err)
+        console.error(err.message)
       }
     },
-      connectCable (message) {
+    connectCable (message) {
       this.messageChannel.perform('receive', {
         message: message,
-        email: window.localStorage.getItem('uid')
+        email: window.localStorage.getItem('uid'),
+        room_id: this.$cookie.get('lastOpenChat')
       })
+    },
+    openChatroom(room_id){
+      this.getMessages(room_id).then(() => {
+        this.$refs.chatWindow.scrollToBottom()
+      })
+    },
+    savedLastOpenRoom(room_id){
+      return this.$cookie.set('lastOpenChat', room_id, 60)
     }
   },
   computed: {
@@ -110,6 +126,6 @@ export default {
         return { ...message, created_at: time }
       })
     }
-  },  
+  },
 }
 </script>

@@ -12,8 +12,8 @@ class RoomChannel < ApplicationCable::Channel
   def receive(data)
     # The receive method is called each time a user types a message into the chat and the message data is received.
     user = User.find_by(email: data['email'])
-    
-    if message = Message.create(content: data['message'], user_id: user.id)
+    p user.name
+    if message = Message.create!(content: data['message'], user_id: user.id, room_id: data['room_id'])
       ActionCable.server.broadcast 'room_channel', { message: data['message'], name: user.name, created_at: message.created_at }
     end
   end
