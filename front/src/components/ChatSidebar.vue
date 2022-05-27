@@ -22,7 +22,7 @@
 <template>
   <div class="chat-sidebar">
     <div v-for="room in chatrooms" :key="room.id" class="chat-room">
-      <div @click="openChatroom" class="chat-room__detail">
+      <div @click="$emit('openChatroom', room.id)" class="chat-room__detail">
         <div class="name">{{ room.name }}</div>
       </div>
     </div>
@@ -30,16 +30,8 @@
 </template>
 
 <script>
+
 export default {
-  data(){
-    return{
-    }
-  },
   props: ['chatrooms'],
-  methods: {
-    openChatroom(){
-      return null
-    }
-  },
 }
 </script>
