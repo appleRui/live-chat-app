@@ -21,4 +21,14 @@ class RoomsController < ApplicationController
     render json: sendData, status: :ok
   end
 
+  def show
+    room = Room.find(params[:id])
+    data = {
+      id: room.id,
+      name: room.name,
+      member: room.room_users.length
+    }
+    render json: data, status: :ok
+  end
+
 end

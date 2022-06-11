@@ -1,6 +1,6 @@
 <style scoped>
 .chat-window {
-  height: 85%;
+  height: 77%;
   background: white;
   padding: 30px 20px;
   border-bottom: 1px solid #eee;

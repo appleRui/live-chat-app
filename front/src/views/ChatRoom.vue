@@ -17,6 +17,7 @@
         :chatrooms="formattedChatRooms"
       />
       <div class="chat-container">
+        <ChatHeader :room="room" />
         <ChatWindow
           @connectCable="connectCable"
           :messages="formattedMessages"
@@ -31,6 +32,7 @@
 <script>
 import ActionCable from 'actioncable'
 import axios from 'axios'
+import ChatHeader from '../components/ChatHeader'
 import ChatWindow from '../components/ChatWindow'
 import ChatSidebar from '@/components/ChatSidebar.vue'
 import Systembar from '@/components/Systembar.vue'
@@ -39,11 +41,12 @@ import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 
 export default {
-  components: { Systembar, ChatSidebar, ChatWindow, NewChatForm },
+  components: { Systembar, ChatSidebar, ChatWindow, ChatHeader, NewChatForm },
   data () {
     return {
       chatrooms: [],
       messages: [],
+      room: {}
     }
   },
   async created() {
@@ -65,7 +68,7 @@ export default {
     this.messageChannel = cable.subscriptions.create('RoomChannel', {
       connected: () => {
         const lastOpenRoomId = this.$cookie.get('lastOpenChat')
-        if(lastOpenRoomId != null){
+        if (lastOpenRoomId != null) {
           this.getMessages(lastOpenRoomId)
           .then(() => {
             this.$refs.chatWindow.scrollToBottom()
@@ -79,11 +82,6 @@ export default {
         })
       }
     })
-          // while (true) {
-          //   setTimeout(() => {
-          //     console.log("更新")
-          //   }, 1000)
-          // }
   },
   beforeUnmount () { 
     this.messageChannel.unsubscribe()
@@ -91,6 +89,7 @@ export default {
   methods: {
     async getMessages(room_id) {
       try {
+        await this.getRoom(room_id)
         const res = await axios.get('http://localhost:3001/messages', {
           headers: {
             uid: window.localStorage.getItem('uid'),
@@ -105,6 +104,24 @@ export default {
           new Error('メッセージ一覧を取得できませんでした')
         }
         this.messages = res.data
+        this.savedLastOpenRoom(room_id)
+      } catch (err) {
+        console.error(err.message)
+      }
+    },
+    async getRoom(room_id) {
+      try {
+        const res = await axios.get('http://localhost:3001/rooms/' + room_id, {
+          headers: {
+            uid: window.localStorage.getItem('uid'),
+            "access-token": window.localStorage.getItem('access-token'),
+            client:window.localStorage.getItem('client')
+          }
+        })
+        if (!res) {
+          new Error('ルーム情報が取得できませんでした')
+        }
+        this.room = res.data
         this.savedLastOpenRoom(room_id)
       } catch (err) {
         console.error(err.message)
