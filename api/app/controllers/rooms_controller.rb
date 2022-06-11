@@ -3,13 +3,22 @@ class RoomsController < ApplicationController
 
   def index
     auth_chatroom = current_user.room_users
-    chatroom_array = auth_chatroom.map do |chatroom|
-      {
+    sendData = []
+    auth_chatroom.each do |chatroom|
+      last_message = chatroom.room.messages.last
+      if last_message.present?
+        last_message_content = last_message.content
+        last_message_created_at = last_message.created_at
+      end
+      data = {
         id: chatroom.room.id,
         name: chatroom.room.name,
+        last_message: last_message_content,
+        timestamp: last_message_created_at
       }
+      sendData.push(data)
     end
-    render json: chatroom_array, status: :ok
+    render json: sendData, status: :ok
   end
 
 end

@@ -12,7 +12,10 @@
   <v-main>
     <Systembar />
     <div class="container">
-      <ChatSidebar @openChatroom="openChatroom" :chatrooms="chatrooms" />
+      <ChatSidebar
+        @openChatroom="openChatroom"
+        :chatrooms="formattedChatRooms"
+      />
       <div class="chat-container">
         <ChatWindow
           @connectCable="connectCable"
@@ -55,27 +58,32 @@ export default {
         this.chatrooms = res.data
       } catch (err) {
         console.log(err)
-      }
+    }
   },
   mounted () {
     const cable = ActionCable.createConsumer('ws://localhost:3001/cable')
     this.messageChannel = cable.subscriptions.create('RoomChannel', {
       connected: () => {
-        const lastOpenRoom = this.$cookie.get('lastOpenChat')
-        if(lastOpenRoom != null){
-          this.getMessages(lastOpenRoom)
+        const lastOpenRoomId = this.$cookie.get('lastOpenChat')
+        if(lastOpenRoomId != null){
+          this.getMessages(lastOpenRoomId)
           .then(() => {
             this.$refs.chatWindow.scrollToBottom()
           })
         }
       },
       received: () => {
-        const lastOpenRoom = this.$cookie.get('lastOpenChat')
-        this.getMessages(lastOpenRoom).then(() => {
+        const lastOpenRoomId = this.$cookie.get('lastOpenChat')
+        this.getMessages(lastOpenRoomId).then(() => {
           this.$refs.chatWindow.scrollToBottom()
         })
       }
     })
+          // while (true) {
+          //   setTimeout(() => {
+          //     console.log("更新")
+          //   }, 1000)
+          // }
   },
   beforeUnmount () { 
     this.messageChannel.unsubscribe()
@@ -125,7 +133,14 @@ export default {
         let time = formatDistanceToNow(new Date(message.created_at), { locale: ja })
         return { ...message, created_at: time }
       })
-    }
+    },
+    formattedChatRooms () {
+      if (!this.chatrooms.length) { return [] }
+      return this.chatrooms.map(room => {
+        let time = formatDistanceToNow(new Date(room.timestamp), { locale: ja })
+        return { ...room, created_at: time }
+      })
+    },
   },
 }
 </script>
