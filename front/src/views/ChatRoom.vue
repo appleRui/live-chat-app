@@ -40,25 +40,27 @@ import NewChatForm from '../components/NewChatForm'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 
+
 export default {
   components: { Systembar, ChatSidebar, ChatWindow, ChatHeader, NewChatForm },
   data () {
     return {
       chatrooms: [],
       messages: [],
-      room: {}
+      room: {},
     }
   },
   async created() {
+    setInterval(() => { this.interval() }, 3000)
     try {
-        const res = await axios.get('http://localhost:3001/rooms', {
-          headers: {
+      const res = await axios.get('http://localhost:3001/rooms', {
+        headers: {
             uid: window.localStorage.getItem('uid'),
             "access-token": window.localStorage.getItem('access-token'),
             client:window.localStorage.getItem('client')
           }
-        })
-        this.chatrooms = res.data
+      })
+      this.chatrooms = res.data
       } catch (err) {
         console.log(err)
     }
@@ -87,6 +89,17 @@ export default {
     this.messageChannel.unsubscribe()
   },
   methods: {
+    async interval() {
+      const res = await axios.get('http://localhost:3001/rooms', {
+        headers: {
+            uid: window.localStorage.getItem('uid'),
+            "access-token": window.localStorage.getItem('access-token'),
+            client:window.localStorage.getItem('client')
+          }
+        })
+      this.chatrooms = res.data
+      console.log(res.data)
+    },
     async getMessages(room_id) {
       try {
         await this.getRoom(room_id)
@@ -158,6 +171,6 @@ export default {
         return { ...room, created_at: time }
       })
     },
-  },
+  }
 }
 </script>
