@@ -16,9 +16,9 @@ ul li {
 }
 .received .message {
   background: #eee;
-  padding: 10px;
+  padding: 8px;
   display: inline-block;
-  border-radius: 30px;
+  border-radius: 10px;
   margin-bottom: 2px;
   max-width: 400px;
 }
@@ -31,9 +31,9 @@ ul li {
 .sent .message {
   background: #677bb4;
   color: white;
-  padding: 10px;
+  padding: 8px;
   display: inline-block;
-  border-radius: 30px;
+  border-radius: 10px;
   margin-bottom: 2px;
   max-width: 400px;
 }
@@ -41,18 +41,19 @@ ul li {
   position: relative;
   margin-right: 6px;
   display: block;
-  font-size: 13px;
+  font-size: 0.6rem;
 }
 .created-at {
   display: block;
   color: #999;
-  font-size: 12px;
-  margin-bottom: 20px;
+  font-size: 0.6rem;
+  margin-bottom: 8px;
   margin-left: 4px;
 }
 .messages {
   height: 100%;
   overflow: auto;
+  font-size: 0.8rem;
 }
 </style>
 
