@@ -23,7 +23,7 @@ textarea {
       autofocus
       placeholder="メッセージを入力してEnterを押してください"
       v-model="message"
-      @keypress.enter.prevent="handleSubmit"
+      @keydown.enter.meta.exact="handleSubmit"
     ></textarea>
   </form>
 </template>
@@ -37,9 +37,11 @@ export default {
     }
   }  ,
   methods: {
-    handleSubmit () {
-      this.$emit('connectCable', this.message)
-      this.message = ''
+    handleSubmit(e) {
+      if (e.ctrlKey || e.metaKey) {
+        this.$emit('connectCable', this.message)
+        this.message = ""
+      }
     }
   }
 }
