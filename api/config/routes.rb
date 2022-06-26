@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :rooms, only: ['index'],id: '/^[a-z]+$/'
+  resources :rooms, only: ['index', 'show'], id: '/^[a-z]+$/'
 
   resources :likes, only: ['destroy']
 #   mount_devise_token_auth_for 'User', at: 'auth'
