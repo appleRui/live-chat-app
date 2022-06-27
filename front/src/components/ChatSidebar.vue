@@ -28,6 +28,7 @@
 
 <template>
   <div class="chat-sidebar">
+    <!-- <v-autocomplete dense outlined :items="chatrooms"></v-autocomplete> -->
     <div v-for="room in chatrooms" :key="room.id" class="chat-room">
       <div @click="$emit('openChatroom', room.id)" class="chat-room__detail">
         <div class="name">{{ room.name }}</div>
