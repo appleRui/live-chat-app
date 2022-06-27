@@ -32,6 +32,13 @@ const routes = [{
     component: () => import( /* webpackChunkName: "about" */ '@/views/auth/TheLogin.vue')
   },
   {
+    path: '/',
+    name: 'root',
+    redirect: {
+      name: 'chatroom'
+    }
+  },
+  {
     path: '/chatroom',
     name: 'chatroom',
     component: () => import( /* webpackChunkName: "about" */ '@/views/ChatRoom.vue'),
