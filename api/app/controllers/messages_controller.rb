@@ -3,7 +3,7 @@ class MessagesController < ApplicationController
 
   def index
     room = Room.find(params['id'])
-    messages = room.messages
+    messages = room.messages.order(:created_at)
     messages_array = messages.map do |message|
       {
         id: message.id,
