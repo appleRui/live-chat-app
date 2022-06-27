@@ -1,27 +1,39 @@
 <style scoped>
 form {
+  border-top: 1px solid #eee;
   height: 15%;
   background-color: #fff;
   padding: 10px;
 }
 textarea {
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 6px;
-  padding: 10px;
   box-sizing: border-box;
   border: 0;
   border-radius: 20px;
   font-family: inherit;
+  height: 100%;
+  resize: none;
   outline: none;
+  padding: 10px;
+  margin-bottom: 6px;
+  max-width: 100%;
+  width: 100%;
+}
+
+.full-screen {
+  position: relative;
+  top: -74%;
+  height: 90vh;
 }
 </style>
     
 <template>
-  <form>
+  <form :class="[isFullScreenTextarea ? 'full-screen' : '']">
+    <v-btn text icon tile class="d-flex ml-auto" @click="chengeTextAreaHeight">
+      <v-icon>{{ screenIcon }}</v-icon>
+    </v-btn>
     <textarea
       autofocus
-      placeholder="メッセージを入力してEnterを押してください"
+      placeholder="メッセージを入力してcmd+enter送信してください"
       v-model="message"
       @keydown.enter.meta.exact="handleSubmit"
     ></textarea>
@@ -33,7 +45,9 @@ export default {
   emits: ['connectCable'],
   data () {
     return {
-      message: ''
+      message: '',
+      isFullScreenTextarea: false,
+      screenIcon: "mdi-fullscreen"
     }
   }  ,
   methods: {
@@ -41,9 +55,13 @@ export default {
       if (e.ctrlKey || e.metaKey) {
         this.$emit('connectCable', this.message)
         this.message = ""
+        this.chengeTextAreaHeight()
       }
+    },
+    chengeTextAreaHeight() {
+      this.isFullScreenTextarea = !this.isFullScreenTextarea
+      this.screenIcon = this.isFullScreenTextarea ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'
     }
   }
 }
 </script>
-
