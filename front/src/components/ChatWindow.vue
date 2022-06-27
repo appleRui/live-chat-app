@@ -1,9 +1,8 @@
 <style scoped>
 .chat-window {
-  height: 77%;
+  height: 74%;
   background: white;
   padding: 30px 20px;
-  border-bottom: 1px solid #eee;
 }
 ul {
   list-style: none;
