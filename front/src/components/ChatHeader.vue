@@ -20,7 +20,7 @@
 <template>
   <div class="chat-header">
     <p class="name">{{ room.name }}</p>
-    <p class="member">{{ room.member }}人のメンバーが参加しています</p>
+    <!-- <p class="member">{{ room.member }}人のメンバーが参加しています</p> -->
   </div>
 </template>
 

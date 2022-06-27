@@ -8,9 +8,7 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   has_many :messages
-  has_many :likes
-  has_many :rooms, through: :room_users
-  has_many :room_users
+  has_many :rooms
   
   validates :name, presence: true
   validates :name, length: { maximum: 30 }
