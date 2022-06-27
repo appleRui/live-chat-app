@@ -55,7 +55,7 @@ export default {
       if (e.ctrlKey || e.metaKey) {
         this.$emit('connectCable', this.message)
         this.message = ""
-        this.chengeTextAreaHeight()
+        if(this.isFullScreenTextarea) this.chengeTextAreaHeight()
       }
     },
     chengeTextAreaHeight() {
