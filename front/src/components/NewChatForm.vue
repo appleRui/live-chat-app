@@ -6,15 +6,15 @@ form {
   padding: 10px;
 }
 textarea {
+  background-color: #f0f0f0;
   box-sizing: border-box;
   border: 0;
-  border-radius: 20px;
+  border-radius: 10px;
   font-family: inherit;
-  height: 100%;
+  height: 95%;
   resize: none;
   outline: none;
   padding: 10px;
-  margin-bottom: 6px;
   max-width: 100%;
   width: 100%;
 }
@@ -55,7 +55,7 @@ export default {
       if (e.ctrlKey || e.metaKey) {
         this.$emit('connectCable', this.message)
         this.message = ""
-        this.chengeTextAreaHeight()
+        if(this.isFullScreenTextarea) this.chengeTextAreaHeight()
       }
     },
     chengeTextAreaHeight() {
