@@ -53,6 +53,7 @@ ul li {
   height: 100%;
   overflow: auto;
   font-size: 0.8rem;
+  white-space: pre-line;
 }
 </style>
 

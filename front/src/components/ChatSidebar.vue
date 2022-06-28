@@ -32,7 +32,7 @@
     <div v-for="room in chatrooms" :key="room.id" class="chat-room">
       <div @click="$emit('openChatroom', room.id)" class="chat-room__detail">
         <div class="name">{{ room.name }}</div>
-        <div class="last-message">{{ room.last_message }}</div>
+        <div class="last-message">{{ messageSlice(room.last_message) }}</div>
       </div>
     </div>
   </div>
@@ -42,5 +42,18 @@
 
 export default {
   props: ['chatrooms'],
+  computed: {
+    messageSlice() {
+      return (message) => {
+        const max_length = 20;
+
+        if (message === null) return message
+        if (message.length > max_length) {
+          return message.substr(0, max_length) + '...';
+        }
+        return message;
+      }
+    }
+  }
 }
 </script>
