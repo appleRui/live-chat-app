@@ -3,7 +3,7 @@ class RoomsController < ApplicationController
 
   def index
     rooms = Room.all
-    sendData = []
+    sendRooms = []
     rooms.each do |room|
       last_message = room.messages.last
       if last_message.present?
@@ -16,18 +16,14 @@ class RoomsController < ApplicationController
         last_message: last_message_content,
         timestamp: last_message_created_at
       }
-      sendData.push(data)
+      sendRooms.push(data)
     end
-    render json: sendData, status: :ok
+    render json: sendRooms, status: :ok
   end
 
   def show
-    room = Room.find(params[:id])
-    data = {
-      id: room.id,
-      name: room.name,
-    }
-    render json: data, status: :ok
+    room = Room.find(params[:id]).slice(:id, :name)
+    render json: room, status: :ok
   end
 
 end

@@ -15,15 +15,6 @@ ActiveRecord::Schema.define(version: 2022_05_25_094819) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "likes", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "message_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["message_id"], name: "index_likes_on_message_id"
-    t.index ["user_id"], name: "index_likes_on_user_id"
-  end
-
   create_table "messages", force: :cascade do |t|
     t.bigint "user_id"
     t.string "content"
@@ -58,6 +49,7 @@ ActiveRecord::Schema.define(version: 2022_05_25_094819) do
     t.text "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
