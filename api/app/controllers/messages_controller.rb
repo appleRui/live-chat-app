@@ -3,8 +3,8 @@ class MessagesController < ApplicationController
 
   def index
     room = Room.find(params['id'])
-    messages = room.messages.order(:created_at)
-    messages_array = messages.map do |message|
+    sort_messages = room.messages.order(:created_at)
+    send_messages = sort_messages.map do |message|
       {
         id: message.id,
         user_id: message.user.id,
@@ -15,7 +15,7 @@ class MessagesController < ApplicationController
       }
     end
 
-    render json: messages_array, status: :ok
+    render json: send_messages, status: :ok
   end
 
 end
