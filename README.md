@@ -13,7 +13,6 @@ WebSocket通信を使用したチャットアプリケーション
     - vuetify
 
 ## ディレクトリ構造
->>>>>>> main
 ```
 .
 ├── README.md
