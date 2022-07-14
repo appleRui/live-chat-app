@@ -1,23 +1,50 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import useValidate from '../auth/validate'
+import { getUid, getAccessToken, getClient} from '@/services/localStorage'
+
+const {
+  validate
+} = useValidate()
+
+const requireAuth = async (to, from, next) => {
+  const uid = getUid()
+  const client = getAccessToken()
+  const accessToken = getClient()
+
+  if (!uid || !client || !accessToken) {
+    alert('ログインしていません')
+    next({
+      name: 'login'
+    })
+    return
+  }
+
+  await validate()
+
+  next()
+}
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
+const routes = [{
+    path: '/login',
+    name: 'login',
+    component: () => import( /* webpackChunkName: "about" */ '@/views/auth/TheLogin.vue')
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/',
+    name: 'root',
+    redirect: {
+      name: 'chatroom'
+    }
+  },
+  {
+    path: '/chatroom',
+    name: 'chatroom',
+    component: () => import( /* webpackChunkName: "about" */ '@/views/ChatRoom.vue'),
+    beforeEnter: requireAuth
+  },
 ]
 
 const router = new VueRouter({
