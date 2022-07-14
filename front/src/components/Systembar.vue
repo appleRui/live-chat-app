@@ -20,13 +20,15 @@
 
 <script>
 import axios from 'axios'
+import { getUid, getName, getAccessToken, getClient } from '@/services/localStorage'
+import { removeStorage } from '@/services/localStorage'
 
 export default {
   name: 'Systembar',
   data() {
     return {
-      name: window.localStorage.getItem('name'),
-      email: window.localStorage.getItem('uid')
+      name: getName(),
+      email: getUid()
     }
   },
   methods: {
@@ -34,16 +36,13 @@ export default {
     try {
       const res = await axios.delete('http://localhost:3001/auth/sign_out', {
         headers: {
-          uid: this.email,
-          "access-token": window.localStorage.getItem('access-token'),
-          client: window.localStorage.getItem('client')
+          "uid": this.email,
+          "access-token": getAccessToken(),
+          "client": getClient()
         }
       })
-      console.log("ログアウトしました")
-      window.localStorage.removeItem('access-token')
-      window.localStorage.removeItem('client')
-      window.localStorage.removeItem('uid')
-      window.localStorage.removeItem('name')
+      alert("ログアウトしました")
+      removeStorage()
       this.$router.push('/login')
       return res
     } catch (error) {
