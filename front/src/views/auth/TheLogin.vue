@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import setItem from '@/auth/setItem'
+import http from '@/services/http'
+import { setStorage } from '@/services/localStorage'
 
 export default {
     name: "TheLogin",
@@ -63,13 +63,12 @@ export default {
     },
     methods: {
       login(){
-        axios.post('http://localhost:3001/auth/sign_in', this.user)
+        http.post('/auth/sign_in', this.user)
         .then((res) => {
-          setItem(res.headers, res.data.data.name)
+          setStorage(res.headers, res.data.data.name)
           this.$router.push('/chatroom')
         })
         .catch((e) => {
-          console.error(e.response)
           alert(e.response.data.errors[0])
         })
       }

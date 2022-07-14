@@ -77,11 +77,13 @@ ul li {
 </template>
 
 <script>
+import { getUid } from "@/services/localStorage"
+
 export default{
   props: ['messages'],
   data () {
     return {
-      uid: localStorage.getItem('uid')
+      uid: getUid()
     }
   },
   methods: {
