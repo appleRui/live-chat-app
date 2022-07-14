@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import useValidate from '../auth/validate'
+import { getUid, getAccessToken, getClient} from '@/services/localStorage'
 
 const {
   validate
 } = useValidate()
 
 const requireAuth = async (to, from, next) => {
-  const uid = window.localStorage.getItem('uid')
-  const client = window.localStorage.getItem('client')
-  const accessToken = window.localStorage.getItem('access-token')
+  const uid = getUid()
+  const client = getAccessToken()
+  const accessToken = getClient()
 
   if (!uid || !client || !accessToken) {
     alert('ログインしていません')

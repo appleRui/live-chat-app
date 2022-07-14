@@ -1,16 +1,8 @@
-import { getUid, getAccessToken, getClient } from '@/services/localStorage'
-import axios from 'axios'
+import http from '@/services/http'
 
 const validate = async () => {
   try {
-    const res = await axios.get('http://localhost:3001/auth/validate_token', {
-      headers: {
-        "uid": getUid(),
-        'access-token': getAccessToken(),
-        "client":  getClient()
-      }
-    })
-
+    const res = await http.get('/auth/validate_token')
     return res
   } catch (err) {
     console.error(err)

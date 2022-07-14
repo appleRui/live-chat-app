@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { getUid, getName, getAccessToken, getClient } from '@/services/localStorage'
+import http from '@/services/http'
+import { getUid, getName } from '@/services/localStorage'
 import { removeStorage } from '@/services/localStorage'
 
 export default {
@@ -34,13 +34,7 @@ export default {
   methods: {
     async logout () {
     try {
-      const res = await axios.delete('http://localhost:3001/auth/sign_out', {
-        headers: {
-          "uid": this.email,
-          "access-token": getAccessToken(),
-          "client": getClient()
-        }
-      })
+      const res = await http.delete('auth/sign_out')
       alert("ログアウトしました")
       removeStorage()
       this.$router.push('/login')
